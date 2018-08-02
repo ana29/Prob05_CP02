@@ -6,25 +6,67 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(viridis)
+library(broom)
+library(modelr)
+library(plotly)
+library(GGally)
+library(pscl)
+
+
+knitr::opts_chunk$set(tidy = FALSE,
+                      fig.width = 6,
+                      fig.height = 5,
+                      echo = FALSE)
+
+```
+#Os Dados
+
+Temos dados descrevendo 5000 encontros relâmpagos (speed dating, procura no google) de 4 minutos envolvendo 310 jovens americanos. Os dados originais foram coletados por professores da Columbia Business School no experimento descrito aqui. Aqui estamos usando uma versão com menos colunas para agilizar para vocês.
+
+Os participantes tinham vários encontros de 4 minutos por noite. Após cada um, preenchiam fichas avaliando aqueles com quem se encontraram. Cada linha nos dados representa um desses encontros. (https://github.com/nazareno/ciencia-de-dados-1/tree/master/5-regressao/speed-dating)
+
+
+```{r}
+
+dados = read_csv(("../speed-dating/speed-dating.csv"), 
+                    progress = FALSE,
+                    col_types = cols(.default = col_double(),
+                                    field	= col_character(),
+                                    race	= col_character(),
+                                    from	= col_character(),
+                                    career	= col_character()))
+
+
+
+
+dados <- dados %>% 
+  select(gender, like, field, music, movies, race, match_es) %>%
+  na.omit() %>%
+  mutate(gender = case_when(.$gender == 0 ~ "homem", 
+                              .$gender == 1 ~ "mulher")) 
+
+
+#dados %>% 
+#  ggplot(aes(x =like, fill = gender)) + 
+#  geom_bar(position = "dodge")
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+#1. Dentre os fatores que você acha que podem ter efeito no match, quais fatores têm efeito significativo na chance de p1 decidir se encontrar novamente com p2? E como é esse efeito (positivo/negativo)?
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+```{r}
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+#2. Que fatores nos dados têm mais efeito na chance de um participante querer se encontrar novamente com outro?
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
+```{r}
+
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+ 
