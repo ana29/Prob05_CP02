@@ -29,7 +29,6 @@ Temos dados descrevendo 5000 encontros relâmpagos (speed dating, procura no goo
 
 Os participantes tinham vários encontros de 4 minutos por noite. Após cada um, preenchiam fichas avaliando aqueles com quem se encontraram. Cada linha nos dados representa um desses encontros. (https://github.com/nazareno/ciencia-de-dados-1/tree/master/5-regressao/speed-dating)
 
-
 ```{r}
 
 dados = read_csv(("../speed-dating/speed-dating2.csv"), 
@@ -59,7 +58,8 @@ A intenção dessa análise é tentar entender quais fatores levaram o participa
 
 #1. Dentre os fatores que você acha que podem ter efeito no match, quais fatores têm efeito significativo na chance de p1 decidir se encontrar novamente com p2? E como é esse efeito (positivo/negativo)?
 
-
+Para responder essa pergunta, primeiro temos que gerar o modelo.
+ 
 ```{r}
 
 x = dados %>% 
@@ -70,26 +70,12 @@ model = glm(dec ~ music + movies + samerace + sports + reading,
                   family = "binomial")
 
 tidy(model, conf.int = TRUE)
-
-
-```
-
-```{r}
-
 tidy(model, conf.int = TRUE, exponentiate = TRUE)
-
-```
-
-
-```{r}
 glance(model)
-```
-
-
-```{r}
 pR2(model)
 
 ```
+
 
 ```{r}
 
@@ -103,24 +89,22 @@ broom::tidy(model,
              ymax = conf.high)) +
   geom_errorbar(size = 0.8, width= 0.4) +
   geom_point(color = "red", size = 2) +
-  geom_hline(yintercept = 1, colour = "darkred") +
+  geom_hline(yintercept = 1, colour = "blue") +
   labs(x = "Fatores",
        title = "Regressão Logistica",
-       y = expression(paste("estimativa ", 'e'^{'B'}," (95% confiança)"))) +
+       y = expression(paste("estimativa ", " (95% confiança)"))) +
   ylim(0,3)
 
 ```
 
-As variáveis com efeito negativo se encontram acima do limiar, já as com efeito negativo estão abaixo.  As que estão no limiar não podem ser consideradas influentes.
+As variáveis com efeito positivo se encontram acima do limiar, já as com efeito negativo estão abaixo.  As que estão no limiar não podem ser consideradas influentes.
 Então, de acordo com o gráfico; música (music) e esportes (sports) não possuem significância para explicar a variável “dec”.
 Já filmes (movies) tem um efeito negativo no mach, enquanto leitura (reading) e o p1 ter a mesma raça do p2 (samerace) tem ambos efeitos positivos.
 
 
-
 #2. Que fatores nos dados têm mais efeito na chance de um participante querer se encontrar novamente com outro?
 
+Para explicar isso, antes é necessário falar que as variáveis com efeito negativo são mais fortes quando estão mais próximas de zero, já as com efeito positivo são quando próximo de infinito (distantes de um no sentido positivo).
+Então de acordo com o gráfico acima; Os candidatos serem da mesma raça é o fator que  têm mais efeito na chance de um participante querer se encontrar novamente com outro.
 
-```{r}
-
-```
  
