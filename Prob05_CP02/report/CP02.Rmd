@@ -31,27 +31,24 @@ Os participantes tinham vários encontros de 4 minutos por noite. Após cada um,
 
 ```{r}
 
-dados = read_csv(("../speed-dating/speed-dating.csv"), 
+dados = read_csv(("../speed-dating/speed-dating2.csv"), 
                     progress = FALSE,
                     col_types = cols(.default = col_double(),
                                     field	= col_character(),
                                     race	= col_character(),
                                     from	= col_character(),
-                                    career	= col_character()))
-
+                                    career	= col_character(),
+                                    dec = col_character()))
 
 
 
 dados <- dados %>% 
-  select(gender, like, field, music, movies, race, match_es) %>%
+  select(gender, music, movies, samerace,dec,sports, reading) %>%
   na.omit() %>%
-  mutate(gender = case_when(.$gender == 0 ~ "homem", 
-                              .$gender == 1 ~ "mulher")) 
+ mutate(gender = case_when(.$gender == 0 ~ "Mulher", .$gender == 1 ~ "Homem")) 
 
+ggpairs(dados)
 
-#dados %>% 
-#  ggplot(aes(x =like, fill = gender)) + 
-#  geom_bar(position = "dodge")
 ```
 
 
