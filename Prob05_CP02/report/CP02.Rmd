@@ -65,19 +65,55 @@ A intenção dessa análise é tentar entender quais fatores levaram o participa
 x = dados %>% 
   mutate(dec = as.factor(dec), 
          gender = as.factor(gender))
-model = glm(dec ~ gender + music + movies + samerace + sports + reading, 
+model = glm(dec ~ music + movies + samerace + sports + reading, 
                   data = x, 
                   family = "binomial")
 
 tidy(model, conf.int = TRUE)
+
+
+```
+
+```{r}
+
 tidy(model, conf.int = TRUE, exponentiate = TRUE)
 
+```
+
+
+```{r}
 glance(model)
+```
+
+
+```{r}
 pR2(model)
 
 ```
-Como todos os valore usados se encontram menores que 5% podemos dizer que há uma  associação estatisticamente significativa entre a variável escolhidas e a variável dec.
 
+```{r}
+
+broom::tidy(model,
+            conf.int = TRUE,
+            conf.level = 0.95,
+            exponentiate = TRUE) %>%
+  filter(term != "(Intercept)") %>%
+  ggplot(aes(term, estimate,
+             ymin = conf.low,
+             ymax = conf.high)) +
+  geom_errorbar(size = 0.8, width= 0.4) +
+  geom_point(color = "red", size = 2) +
+  geom_hline(yintercept = 1, colour = "darkred") +
+  labs(x = "Fatores",
+       title = "Regressão Logistica",
+       y = expression(paste("estimativa ", 'e'^{'B'}," (95% confiança)"))) +
+  ylim(0,3)
+
+```
+
+As variáveis com efeito negativo se encontram acima do limiar, já as com efeito negativo estão abaixo.  As que estão no limiar não podem ser consideradas influentes.
+Então, de acordo com o gráfico; música (music) e esportes (sports) não possuem significância para explicar a variável “dec”.
+Já filmes (movies) tem um efeito negativo no mach, enquanto leitura (reading) e o p1 ter a mesma raça do p2 (samerace) tem ambos efeitos positivos.
 
 
 
