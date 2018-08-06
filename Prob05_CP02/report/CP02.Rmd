@@ -22,6 +22,7 @@ knitr::opts_chunk$set(tidy = FALSE,
                       echo = FALSE)
 
 ```
+
 #Os Dados
 
 Temos dados descrevendo 5000 encontros relâmpagos (speed dating, procura no google) de 4 minutos envolvendo 310 jovens americanos. Os dados originais foram coletados por professores da Columbia Business School no experimento descrito aqui. Aqui estamos usando uma versão com menos colunas para agilizar para vocês.
@@ -43,21 +44,41 @@ dados = read_csv(("../speed-dating/speed-dating2.csv"),
 
 
 dados <- dados %>% 
-  select(gender, music, movies, samerace,dec,sports, reading) %>%
+  select(gender, music, movies, samerace,sports, reading,dec) %>%
   na.omit() %>%
  mutate(gender = case_when(.$gender == 0 ~ "Mulher", .$gender == 1 ~ "Homem")) 
-
-ggpairs(dados)
+ggpairs(dados, progress = FALSE)
 
 ```
 
+#Intenção
+
+A intenção dessa análise é tentar entender quais fatores levaram o participante 1 a querer se encontrar novamente com o participante 2. 
+
+# As Perguntas : 
 
 #1. Dentre os fatores que você acha que podem ter efeito no match, quais fatores têm efeito significativo na chance de p1 decidir se encontrar novamente com p2? E como é esse efeito (positivo/negativo)?
 
 
 ```{r}
 
+x = dados %>% 
+  mutate(dec = as.factor(dec), 
+         gender = as.factor(gender))
+model = glm(dec ~ gender + music + movies + samerace + sports + reading, 
+                  data = x, 
+                  family = "binomial")
+
+tidy(model, conf.int = TRUE)
+tidy(model, conf.int = TRUE, exponentiate = TRUE)
+
+glance(model)
+pR2(model)
+
 ```
+Como todos os valore usados se encontram menores que 5% podemos dizer que há uma  associação estatisticamente significativa entre a variável escolhidas e a variável dec.
+
+
 
 
 #2. Que fatores nos dados têm mais efeito na chance de um participante querer se encontrar novamente com outro?
